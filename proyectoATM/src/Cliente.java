@@ -1,3 +1,4 @@
+import java.time.*;
 public class Cliente extends Persona{
 	private String claveCliente;
 	private String RFC;
@@ -36,7 +37,9 @@ public class Cliente extends Persona{
 	}
 	
 	private void setClaveCliente(){
-		
+		LocalDateTime thisSec;
+		thisSec = LocalDateTime.now();
+		this.claveCliente = Math.abs(thisSec.hashCode());
 	}
 	
 	public String getClaveCliente(){

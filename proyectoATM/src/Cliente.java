@@ -16,6 +16,7 @@ public class Cliente extends Persona{
 		super.setApellidoMaterno(apellidoMaterno);
 		this.cuenta = new Cuenta[2];
 		setRFC();
+		setClaveCliente();
 	}
 	
 	public Cuenta getCuenta(int i){

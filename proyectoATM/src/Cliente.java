@@ -40,7 +40,7 @@ public class Cliente extends Persona{
 	private void setClaveCliente(){
 		LocalDateTime thisSec;
 		thisSec = LocalDateTime.now();
-		this.claveCliente = Math.abs(thisSec.hashCode());
+		this.claveCliente = String.valueOf(Math.abs(thisSec.hashCode()));
 	}
 	
 	public String getClaveCliente(){

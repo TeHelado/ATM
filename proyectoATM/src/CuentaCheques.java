@@ -17,4 +17,8 @@ public class CuentaCheques extends Cuenta{
 	public CuentaAhorro getCuentaDeAhorro(){
 		return this.proteccion;
 	}
+	
+	public boolean retirarACuenta(double cantidad){
+		return super.retirarACuenta(cantidad);
+	}
 }

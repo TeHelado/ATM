@@ -18,7 +18,7 @@ public class Cuenta{
 			return false;
 	}
 	
-	public boolean retirarCuenta(double cantidad){
+	public boolean retirarACuenta(double cantidad){
 		if(cantidad <= this.saldo){
 			this.saldo -= cantidad;
 			return true;

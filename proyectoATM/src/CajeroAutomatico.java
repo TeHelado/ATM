@@ -20,11 +20,10 @@ public class CajeroAutomatico{
 		return this.billetes[i];
 	}
 	
-	public void mostrarMenuATM(Banco banco){
+	public void mostrarMenuATM(Banco banco, Scanner teclado){
 		int pos=0;
 		boolean NIPReconocido = false;	
 		System.out.print("\nInserte su NIP: ");
-		Scanner teclado = new Scanner(System.in);
 		String NIPIngresado = teclado.next();
 		for(int i = 0; i < banco.getUltimoElemento(); i++){
 			if(NIPIngresado.equals(banco.getCliente(i).getNIP())){
@@ -83,7 +82,7 @@ public class CajeroAutomatico{
 					case 4:
 						if(banco.getCliente(pos).getNumCuentas()>0){
 							int cuenta = 0;
-							double saldo;
+							double saldo, saldo2;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
 								System.out.println("En que cuenta deseas retirar? Opcion: ");
@@ -96,10 +95,55 @@ public class CajeroAutomatico{
 								System.out.println("Fondos insuficientes en el cajero.");
 							else
 							{
-								if(banco.getCliente(pos).getCuenta(cuenta).retirarCuenta(saldo)==true)
-									System.out.println("Retirado con exito de la cuenta " + cuenta);
+								if (CalculaBilletes((int)saldo))
+								{
+									if (banco.getCliente(pos).getCuenta(cuenta) instanceof CuentaAhorro)
+									{
+										if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
+										{
+											System.out.println("Retirado con exito de la cuenta " + cuenta);
+											RetirarBilletes((int)saldo);
+										}	
+										else
+											System.out.println("No se pudo retirar de la cuenta" + cuenta);
+									}
+									else{
+										if(banco.getCliente(pos).getCuenta(cuenta).getSaldo() + ((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().getSaldo() >= saldo)
+										{
+											if (banco.getCliente(pos).getCuenta(cuenta).getSaldo() >= saldo)
+											{
+												if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
+												{
+													System.out.println("Retirado con exito de la cuenta " + cuenta);
+													RetirarBilletes((int)saldo);
+												}
+												else
+													System.out.println("No se pudo retirar de la cuenta" + cuenta);
+											}
+											else
+											{
+												saldo2 = banco.getCliente(pos).getCuenta(cuenta).getSaldo();
+												if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2)==true)
+												{
+													saldo -= saldo2;
+													if(((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo)==true)
+													{
+														System.out.println("Retirado con exito de la cuenta " + cuenta);
+														RetirarBilletes((int)saldo + (int)saldo2);
+													}
+													else
+														System.out.println("No se pudo retirar de la cuenta" + cuenta);
+												}
+												else
+													System.out.println("No se pudo retirar de la cuenta" + cuenta);	
+											}
+										}
+										else
+											System.out.println("No se pudo retirar de la cuenta" + cuenta);
+									}
+								}
 								else
-									System.out.println("No se pudo retirar de la cuenta" + cuenta);
+									System.out.println("Billetes insuficientes en el cajero.");
 							}
 						}
 						else{
@@ -140,6 +184,47 @@ public class CajeroAutomatico{
 		}
 	}*/
 	
+	private boolean CalculaBilletes(int cantidad){
+		if (this.efectivoCajero < cantidad)
+			return false;
+		boolean quedanBilletes = true;
+		int cantidadBilletes;
+		while (quedanBilletes && cantidad > 0)
+		{
+			for(int i=0;i<getNumMaxBilletes();i++){
+				cantidadBilletes = this.billetes[i].getNumBilletes();
+				while(cantidadBilletes > 0 && cantidad - this.billetes[i].getNombreBillete() >= 0)
+				{
+					cantidad -= this.billetes[i].getNombreBillete();
+					cantidadBilletes--;
+					if (cantidad == 0)
+						return true;
+				}
+			}
+			quedanBilletes = false;
+		}
+		return false;
+	}
+	
+	private void RetirarBilletes(int cantidad){
+		if (this.efectivoCajero < cantidad)
+			return;
+		int aux = cantidad;
+		boolean quedanBilletes = true;
+		for(int i=0;i<getNumMaxBilletes();i++){
+			while(this.billetes[i].getNumBilletes() > 0 && cantidad - this.billetes[i].getNombreBillete() >= 0)
+			{
+				cantidad -= this.billetes[i].getNombreBillete();
+				this.billetes[i].venderProducto();
+				if (cantidad == 0)
+				{
+					this.efectivoCajero -= aux;
+					return;
+				}	
+			}
+		}
+		return;
+	}
 	private void inicializarDespachadorDeBilletes(){
 		Random numRandom = new Random();
 		double nombreBilletes[][] = {{500, 10}, {200, 20}, {100, 30}, {50, 40}, {20, 50}};

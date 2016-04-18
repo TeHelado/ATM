@@ -1,4 +1,3 @@
-package ejercicioRFC;
 public class RFC{
 	private String inicialesRFC;
 	private String fechaRFC;

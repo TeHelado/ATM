@@ -5,8 +5,6 @@ public class CuentaCheques extends Cuenta{
 		super(saldoInicial);
 	}
 	
-
-	
 	public CuentaCheques(double saldoInicial,CuentaAhorro proteccion){
 		super(saldoInicial);
 		this.proteccion = proteccion;

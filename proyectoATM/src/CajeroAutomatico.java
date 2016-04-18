@@ -83,6 +83,7 @@ public class CajeroAutomatico{
 					case 4:
 						if(banco.getCliente(pos).getNumCuentas()>0){
 							int cuenta = 0;
+							double saldo;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
 								System.out.println("En que cuenta deseas retirar? Opcion: ");
@@ -90,10 +91,16 @@ public class CajeroAutomatico{
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
 							System.out.println("Inserte el dinero a retirar: ");
-							if(banco.getCliente(pos).getCuenta(cuenta).retirarCuenta(teclado.nextDouble())==true)
-								System.out.println("Retirado con exito de la cuenta " + cuenta);
+							saldo = teclado.nextDouble();
+							if (this.efectivoCajero < saldo)
+								System.out.println("Fondos insuficientes en el cajero.");
 							else
-								System.out.println("No se pudo retirar de la cuenta" + cuenta);
+							{
+								if(banco.getCliente(pos).getCuenta(cuenta).retirarCuenta(saldo)==true)
+									System.out.println("Retirado con exito de la cuenta " + cuenta);
+								else
+									System.out.println("No se pudo retirar de la cuenta" + cuenta);
+							}
 						}
 						else{
 							System.out.println("No tienes cuentas, favor de crear una");

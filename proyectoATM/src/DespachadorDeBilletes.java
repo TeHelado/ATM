@@ -1,23 +1,22 @@
 public class DespachadorDeBilletes{
+	private double nombreBillete;
 	private int numBilletes;
-	private double denominacionBillete;
-
-	public DespachadorDeBilletes(int numBilletes, double denominacionBillete){
+	
+	public DespachadorDeBilletes(double nombreBillete,int numBilletes){
+		this.nombreBillete = nombreBillete;
 		this.numBilletes = numBilletes;
-		this.denominacionBillete = denominacionBillete;
 	}
-
+	
+	public double getNombreBillete(){
+		return this.nombreBillete;
+	}
+	
 	public int getNumBilletes(){
 		return this.numBilletes;
 	}
 	
-	public double getDenominacionBillete(){
-		return this.denominacionBillete;
+	public void venderProducto(){
+		if(this.numBilletes>0)
+			this.numBilletes--;
 	}
-
-	public void venderBillete(){
-		if(numBilletes>0){
-			numBilletes = numBilletes - 1;
-		}
-	}
-}	
+}

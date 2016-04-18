@@ -10,10 +10,11 @@ public class Cliente extends Persona{
 		
 	}
 	
-	public Cliente(String nombre,String apellidoPaterno,String apellidoMaterno){
+	public Cliente(String nombre,String apellidoPaterno,String apellidoMaterno, Fecha fecha){
 		super.setNombre(nombre);
 		super.setApellidoPaterno(apellidoPaterno);
 		super.setApellidoMaterno(apellidoMaterno);
+		super.setFechaDeNacimiento(fecha);
 		this.cuenta = new Cuenta[2];
 		setRFC();
 		setClaveCliente();

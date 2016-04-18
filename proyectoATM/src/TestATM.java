@@ -1,5 +1,6 @@
-public class TestATM(){
-	public void main(String args[]){
+import java.util.Scanner;
+public class TestATM{
+	public static void main(String args[]){
 		Scanner teclado = new Scanner(System.in);
 		Banco banco = new Banco();
 		CajeroAutomatico ca = new CajeroAutomatico();
@@ -19,13 +20,12 @@ public class TestATM(){
 				}break;
 				case 2:{
 					ca.mostrarMenuATM(banco,teclado);
-				}
+				}break;
 				case 3:{
-					System.out.println("Baia baia :v"):
-				}
+					System.out.println("Baia baia :v");
+				}break;
 			}
 		}while(opc != 3);
 	}
 
 }
-

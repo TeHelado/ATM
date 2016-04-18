@@ -5,7 +5,7 @@ public class Banco{
 	private Vector<Cliente> clientes;
 	
 	public Banco(){
-		clientes = new Vector<Cliente>();
+		clientes = new Vector<Cliente>(20, 1);
 	}
 	
 	public Cliente getCliente(int i){
@@ -13,7 +13,7 @@ public class Banco{
 	}
 	
 	public int getUltimoElemento(){
-		return this.clientes.lastIndexOf(clientes);
+		return this.clientes.size();
 	}
 	
 	public void mostrarMenuCliente(Scanner teclado){
@@ -33,7 +33,18 @@ public class Banco{
 					aP = teclado.next();
 					System.out.print("Apellido Materno: ");
 					aM = teclado.next();
-					Cliente nuevoCliente = new Cliente(n,aP,aM);
+					
+					Fecha fechaCliente = new Fecha();
+					int dia,mes,anio;
+					System.out.print("Dia de nacimiento: ");
+					dia = teclado.nextInt();
+					System.out.print("Mes de nacimiento: ");
+					mes = teclado.nextInt();
+					System.out.print("Anio de nacimiento: ");
+					anio = teclado.nextInt();
+					fechaCliente.setFecha(dia,mes,anio);
+					
+					Cliente nuevoCliente = new Cliente(n,aP,aM, fechaCliente);
 					
 					String calle,colonia;
 					int numero;
@@ -52,21 +63,12 @@ public class Banco{
 					dirCliente.setPais(teclado.next());
 					nuevoCliente.setDireccion(dirCliente);
 					
-					Fecha fechaCliente = new Fecha();
-					int dia,mes,anio;
-					System.out.print("Dia de nacimiento: ");
-					dia = teclado.nextInt();
-					System.out.print("Mes de nacimiento: ");
-					mes = teclado.nextInt();
-					System.out.print("Anio de nacimiento: ");
-					anio = teclado.nextInt();
-					fechaCliente.setFecha(dia,mes,anio);
-					nuevoCliente.setFechaDeNacimiento(fechaCliente);
+				
 					
 					System.out.print("\nIngresa un NIP: ");
 					nuevoCliente.setNIP(teclado.next());
 					
-					clientes.add(nuevoCliente);
+					clientes.addElement(nuevoCliente);
 					break;
 				case 2:
 					int pos=0;
@@ -87,6 +89,7 @@ public class Banco{
 							do{
 								System.out.println("1.Alta cuenta de ahorro");
 								System.out.println("2.Alta cuenta de cheques");
+								System.out.println("3.Salir");
 								System.out.print("\nOpcion: ");
 								opc2 = teclado.nextInt();
 								switch(opc2){
@@ -99,12 +102,20 @@ public class Banco{
 											System.out.println("La cantidad minima son $50");
 										break;
 									case 2:
-										System.out.println("Deposita in saldo inicial (minimo $50): ");
-										saldo = teclado.nextDouble();
-										if (saldo >= 50)
-											getCliente(pos).agregarCuenta(new CuentaCheques(saldo));
+										if (getCliente(pos).getNumCuentas() == 0)
+											System.out.println("Necesitas una cuenta de ahorro.");
 										else
-											System.out.println("La cantidad minima son $50");
+										{
+											System.out.println("Deposita in saldo inicial (minimo $50): ");
+											saldo = teclado.nextDouble();
+											if (saldo >= 50)
+											{
+												getCliente(pos).agregarCuenta(new CuentaCheques(saldo));
+												((CuentaCheques)getCliente(pos).getCuenta(1)).setCuentaDeAhorro((CuentaAhorro)getCliente(pos).getCuenta(0));
+											}
+											else
+												System.out.println("La cantidad minima son $50");
+										}
 										break;
 									default:
 										System.out.println("Inserta un numero valido");

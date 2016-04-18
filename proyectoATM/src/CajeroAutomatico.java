@@ -65,7 +65,7 @@ public class CajeroAutomatico{
 							int cuenta = 0;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
-								System.out.println("En que cuenta deseas depositar? Opcion: ");
+								System.out.println("En que cuenta deseas depositar? (1 = ahorro, 2 = cheques) Opcion: ");
 								cuenta = teclado.nextInt();
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
@@ -85,7 +85,7 @@ public class CajeroAutomatico{
 							double saldo, saldo2;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
-								System.out.println("En que cuenta deseas retirar? Opcion: ");
+								System.out.println("En que cuenta deseas retirar? (1 = ahorro, 2 = cheques) Opcion: ");
 								cuenta = teclado.nextInt();
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
@@ -193,6 +193,12 @@ public class CajeroAutomatico{
 		{
 			for(int i=0;i<getNumMaxBilletes();i++){
 				cantidadBilletes = this.billetes[i].getNumBilletes();
+				if (this.billetes[i].getNombreBillete() == 50 && Math.floorMod(cantidad - 50, 20) != 0)
+				{
+					i++;
+					cantidadBilletes = this.billetes[i].getNumBilletes();
+				}
+					
 				while(cantidadBilletes > 0 && cantidad - this.billetes[i].getNombreBillete() >= 0)
 				{
 					cantidad -= this.billetes[i].getNombreBillete();

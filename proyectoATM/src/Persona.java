@@ -11,6 +11,7 @@ public class Persona{
 		this.nombre = nombre;
 		this.apellidoPaterno = apellidoPaterno;
 		this.apellidoMaterno = apellidoMaterno;
+		fechaDeNacimiento = new Fecha();
 	}
 	
 	public Persona(){

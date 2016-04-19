@@ -1,3 +1,4 @@
+package cuentas;
 public class CuentaCheques extends Cuenta{
 	private CuentaAhorro proteccion;
 	
@@ -18,7 +19,10 @@ public class CuentaCheques extends Cuenta{
 		return this.proteccion;
 	}
 	
-	public boolean retirarACuenta(double cantidad){
-		return super.retirarACuenta(cantidad);
+	public void retirarACuenta(double cantidad) throws OverdraftException{
+		if(getCuentaDeAhorro()==null)
+			throw new OverdraftException("No hay proteccion",cantidad);
+		else
+			super.retirarACuenta(cantidad);
 	}
 }

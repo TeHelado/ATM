@@ -1,6 +1,9 @@
+package banco;
 import java.util.Scanner;
 import java.util.Collection;
 import java.util.Vector;
+import personales.*;
+import cuentas.*;
 public class Banco{
 	private Vector<Cliente> clientes;
 	
@@ -94,7 +97,7 @@ public class Banco{
 								opc2 = teclado.nextInt();
 								switch(opc2){
 									case 1:
-										System.out.println("Deposita in saldo inicial (minimo $50): ");
+										System.out.print("Deposita in saldo inicial (minimo $50): ");
 										saldo = teclado.nextDouble();
 										if (saldo >= 50)
 											getCliente(pos).agregarCuenta(new CuentaAhorro(saldo, 0));
@@ -106,7 +109,7 @@ public class Banco{
 											System.out.println("Necesitas una cuenta de ahorro.");
 										else
 										{
-											System.out.println("Deposita in saldo inicial (minimo $50): ");
+											System.out.print("Deposita in saldo inicial (minimo $50): ");
 											saldo = teclado.nextDouble();
 											if (saldo >= 50)
 											{
@@ -117,8 +120,6 @@ public class Banco{
 												System.out.println("La cantidad minima son $50");
 										}
 										break;
-									default:
-										System.out.println("Inserta un numero valido");
 								}
 							}while(opc2!=3);
 						}
@@ -130,8 +131,6 @@ public class Banco{
 						System.out.println("El NIP no coincide con ningun usuario registrado");
 					}
 					break;
-				default:
-					System.out.println("Selecciona una opcion valida");
 			}
 		}while(opc!=3);
 	}

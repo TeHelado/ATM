@@ -1,4 +1,7 @@
+package banco;
 import java.time.*;
+import personales.*;
+import cuentas.*;
 public class Cliente extends Persona{
 	private String claveCliente;
 	private String RFC;

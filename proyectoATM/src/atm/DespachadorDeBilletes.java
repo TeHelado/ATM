@@ -1,3 +1,4 @@
+package atm;
 public class DespachadorDeBilletes{
 	private double nombreBillete;
 	private int numBilletes;

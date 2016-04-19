@@ -1,3 +1,4 @@
+package personales;
 public class RFC{
 	private String inicialesRFC;
 	private String fechaRFC;

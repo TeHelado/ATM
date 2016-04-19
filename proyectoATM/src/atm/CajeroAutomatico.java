@@ -1,5 +1,8 @@
+package atm;
 import java.util.Scanner;
 import java.util.Random;
+import cuentas.*;
+import banco.*;
 public class CajeroAutomatico{
 	private DespachadorDeBilletes[] billetes;
 	private double efectivoCajero;
@@ -44,7 +47,7 @@ public class CajeroAutomatico{
 				opc = teclado.nextInt();
 				switch(opc){
 					case 1:
-						System.out.println("Inserte el nuevo NIP: ");
+						System.out.print("Inserte el nuevo NIP: ");
 						banco.getCliente(pos).setNIP(teclado.next());
 						System.out.println("NIP cambiado");
 						break;
@@ -61,15 +64,15 @@ public class CajeroAutomatico{
 							int cuenta = 0;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
-								System.out.println("En que cuenta deseas depositar? (1 = ahorro, 2 = cheques) Opcion: ");
+								System.out.print("En que cuenta deseas depositar? (1 = ahorro, 2 = cheques) Opcion: ");
 								cuenta = teclado.nextInt();
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
-							System.out.println("Inserte el dinero a depositar: ");
+							System.out.print("Inserte el dinero a depositar: ");
 							if(banco.getCliente(pos).getCuenta(cuenta).depositarCuenta(teclado.nextDouble())==true)
-								System.out.println("Depositado con exito en la cuenta " + cuenta);
+								System.out.println("Depositado con exito en la cuenta " + (cuenta+1));
 							else
-								System.out.println("No se pudo depositar en la cuenta" + cuenta);
+								System.out.println("No se pudo depositar en la cuenta" + (cuenta+1));
 						}
 						else{
 							System.out.println("No tienes cuentas, favor de crear una");
@@ -81,11 +84,11 @@ public class CajeroAutomatico{
 							double saldo, saldo2;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
-								System.out.println("En que cuenta deseas retirar? (1 = ahorro, 2 = cheques) Opcion: ");
+								System.out.print("En que cuenta deseas retirar? (1 = ahorro, 2 = cheques) Opcion: ");
 								cuenta = teclado.nextInt();
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
-							System.out.println("Inserte el dinero a retirar: ");
+							System.out.print("Inserte el dinero a retirar: ");
 							saldo = teclado.nextDouble();
 							if (this.efectivoCajero < saldo)
 								System.out.println("Fondos insuficientes en el cajero.");
@@ -95,47 +98,51 @@ public class CajeroAutomatico{
 								{
 									if (banco.getCliente(pos).getCuenta(cuenta) instanceof CuentaAhorro)
 									{
-										if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
-										{
-											System.out.println("Retirado con exito de la cuenta " + cuenta);
+										try{
+											banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
+											System.out.println("Retirado con exito de la cuenta " + (cuenta+1));
 											RetirarBilletes((int)saldo);
 										}	
-										else
-											System.out.println("No se pudo retirar de la cuenta" + cuenta);
+										catch(OverdraftException e){
+											System.out.println(e.getMessage() + e.getDeficit());
+										}
 									}
 									else{
 										if(banco.getCliente(pos).getCuenta(cuenta).getSaldo() + ((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().getSaldo() >= saldo)
 										{
 											if (banco.getCliente(pos).getCuenta(cuenta).getSaldo() >= saldo)
 											{
-												if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
-												{
-													System.out.println("Retirado con exito de la cuenta " + cuenta);
+												try{
+													banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
+													System.out.println("Retirado con exito de la cuenta " + (cuenta+1));
 													RetirarBilletes((int)saldo);
 												}
-												else
-													System.out.println("No se pudo retirar de la cuenta" + cuenta);
+												catch(OverdraftException e){
+													System.out.println(e.getMessage() + e.getDeficit());
+												}
 											}
 											else
 											{
 												saldo2 = banco.getCliente(pos).getCuenta(cuenta).getSaldo();
-												if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2)==true)
-												{
+												try{
+													banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2);
 													saldo -= saldo2;
-													if(((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo)==true)
-													{
-														System.out.println("Retirado con exito de la cuenta " + cuenta);
+													try{
+														((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo);
+														System.out.println("Retirado con exito de la cuenta " + (cuenta+1));
 														RetirarBilletes((int)saldo + (int)saldo2);
 													}
-													else
-														System.out.println("No se pudo retirar de la cuenta" + cuenta);
+													catch(OverdraftException e){
+														System.out.println(e.getMessage() + e.getDeficit());
+													}
 												}
-												else
-													System.out.println("No se pudo retirar de la cuenta" + cuenta);	
+												catch(OverdraftException e){
+													System.out.println(e.getMessage() + e.getDeficit());
+												}
 											}
 										}
 										else
-											System.out.println("No se pudo retirar de la cuenta" + cuenta);
+											System.out.println("No se pudo retirar de la cuenta" + (cuenta+1));
 									}
 								}
 								else
@@ -151,12 +158,12 @@ public class CajeroAutomatico{
 							int cuenta = 0;
 							do{
 								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
-								System.out.println("En que cuenta deseas retirar? (1 = ahorro, 2 = cheques) Opcion: ");
+								System.out.print("De que cuenta deseas pagar? (1 = ahorro, 2 = cheques) Opcion: ");
 								cuenta = teclado.nextInt();
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
 							do{
-								System.out.println("1.- pago de luz\n2.- pago de agua\n3.- pago de gas\n4.- salir");
+								System.out.print("1.- pago de luz\n2.- pago de agua\n3.- pago de gas\n4.- salir\n\nOpcion: ");
 								opc2 = teclado.nextInt();
 								switch(opc2)
 								{
@@ -202,70 +209,53 @@ public class CajeroAutomatico{
 		int cantidadBilletes;
 		if (banco.getCliente(pos).getCuenta(cuenta) instanceof CuentaAhorro)
 		{
-			if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
-			{
+			try{
+				banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
 				System.out.println("Se pago " + servicio);
 				ImprimeSaldo(banco, pos);
 			}
-			else
-				System.out.println("No se pudo pagar, fondos insuficientes.");
+			catch(OverdraftException e){
+				System.out.println(e.getMessage() + e.getDeficit());
+			}
 		}
 		else{
 			if(banco.getCliente(pos).getCuenta(cuenta).getSaldo() + ((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().getSaldo() >= saldo)
 			{
 				if (banco.getCliente(pos).getCuenta(cuenta).getSaldo() >= saldo)
 				{
-					if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
-					{
+					try{
+						banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
 						System.out.println("Se pago " + servicio);
 						ImprimeSaldo(banco, pos);
 					}
-					else
-						System.out.println("No se pudo pagar, fondos insuficientes.");
+					catch(OverdraftException e){
+						System.out.println(e.getMessage() + e.getDeficit());
+					}
 				}
 				else
 				{
 					saldo2 = banco.getCliente(pos).getCuenta(cuenta).getSaldo();
-					if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2)==true)
-					{
+					try{
+						banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2);
 						saldo -= saldo2;
-						if(((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo)==true)
-						{
+						try{
+							((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo);
 							System.out.println("Se pago " + servicio);
 							ImprimeSaldo(banco, pos);
 						}
-						else
-							System.out.println("No se pudo pagar, fondos insuficientes.");
+						catch(OverdraftException e){
+							System.out.println(e.getMessage() + e.getDeficit());
+						}
 					}
-					else
-						System.out.println("No se pudo pagar, fondos insuficientes.");
+					catch(OverdraftException e){
+						System.out.println(e.getMessage() + e.getDeficit());
+					}
 				}
 			}
 			else
 				System.out.println("No se pudo pagar, fondos insuficientes.");
 		}
 	}
-	/*private void mostrarProductos(){
-		for(int i=0;i<getNumMaxJugos();i++){
-			System.out.println((i+1) + ". Jugo de " + jugos[i].getNombreProducto() + " Precio: $" + jugos[i].getPrecioProducto() +" Cuantos: " + jugos[i].getNumProductos());
-		}
-	}*/
-	
-	/*public void despacharBilletes(double importe){
-		if(jugo.getNumProductos()>0){
-			double cambio;
-			cambio = cajaRegistradora.aceptaEfectivoCliente(importe,jugo.getPrecioProducto());
-			if(cambio == -1){
-				throw new DespachadorVacio("\nImporte Insuficiente","\n\nSu cambio: $" + importe + "\n");
-			}else{
-				jugo.venderProducto();
-				System.out.println("\nSu cambio: $" + cambio + "\n");
-			}
-		}
-		else{
-			throw new DespachadorVacio("\nLo siento el jugo de ",jugo.getNombreProducto() + " esta agotado" + "\n\nSu cambio: $" + importe + "\n");
-		}
-	}*/
 	
 	private boolean CalculaBilletes(int cantidad){
 		if (this.efectivoCajero < cantidad)

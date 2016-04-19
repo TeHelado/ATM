@@ -1,4 +1,7 @@
 import java.util.Scanner;
+import banco.*;
+import atm.*;
+import cuentas.*;
 public class TestATM{
 	public static void main(String args[]){
 		Scanner teclado = new Scanner(System.in);
@@ -12,6 +15,7 @@ public class TestATM{
 			System.out.println("1.-Administrador de clientes");
 			System.out.println("2.-ATM");
 			System.out.println("3.-Salir");
+			System.out.print("\nOpcion: ");
 			opc = teclado.nextInt();
 	
 			switch(opc){

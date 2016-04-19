@@ -1,3 +1,4 @@
+package cuentas;
 public class Cuenta{
 	private double saldo;
 	
@@ -18,12 +19,11 @@ public class Cuenta{
 			return false;
 	}
 	
-	public boolean retirarACuenta(double cantidad){
+	public void retirarACuenta(double cantidad) throws OverdraftException{
 		if(cantidad <= this.saldo){
 			this.saldo -= cantidad;
-			return true;
 		}
 		else
-			return false;
+			throw new OverdraftException("Fondos Insuficientes Tu deficit es: ",(cantidad-saldo));
 	}
 }

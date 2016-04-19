@@ -1,3 +1,4 @@
+package cuentas;
 public class OverdraftException extends Exception{
 	private double deficit;
 	

@@ -32,7 +32,7 @@ public class CajeroAutomatico{
 			}
 		}
 		if(NIPReconocido == true){
-			int opc;
+			int opc, opc2;
 			do{
 				System.out.println("1.- Cambio de NIP");
 				System.out.println("2.- Consulta de Saldo");
@@ -50,11 +50,7 @@ public class CajeroAutomatico{
 						break;
 					case 2:
 						if(banco.getCliente(pos).getNumCuentas()>0){
-							double miSaldo = 0;
-							for(int i = 0; i < banco.getCliente(pos).getNumCuentas(); i++){
-								miSaldo += banco.getCliente(pos).getCuenta(i).getSaldo();
-							}
-							System.out.println("Tu saldo es de: $" + miSaldo);
+							ImprimeSaldo(banco, pos);
 						}
 						else{
 							System.out.println("No tienes cuentas, favor de crear una");
@@ -151,6 +147,35 @@ public class CajeroAutomatico{
 						}
 						break;
 					case 5:
+						if(banco.getCliente(pos).getNumCuentas()>0){
+							int cuenta = 0;
+							do{
+								System.out.println("Tienes " + banco.getCliente(pos).getNumCuentas() + " cuentas");
+								System.out.println("En que cuenta deseas retirar? (1 = ahorro, 2 = cheques) Opcion: ");
+								cuenta = teclado.nextInt();
+							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
+							cuenta--;
+							do{
+								System.out.println("1.- pago de luz\n2.- pago de agua\n3.- pago de gas\n4.- salir");
+								opc2 = teclado.nextInt();
+								switch(opc2)
+								{
+									case 1:
+										pagarServicio(500, "la luz.", pos, banco, cuenta);
+										break;
+									case 2:
+										pagarServicio(50, "el agua.", pos, banco, cuenta);
+										break;
+									case 3:
+										pagarServicio(350, "el gas.", pos, banco, cuenta);
+										break;
+								}
+							}
+							while(opc2 != 4);
+						}
+						else{
+							System.out.println("No tienes cuentas, favor de crear una");
+						}
 						break;
 					default:
 						System.out.println("Selecciona una opcion valida");
@@ -162,6 +187,64 @@ public class CajeroAutomatico{
 		}
 	}
 	
+	private void ImprimeSaldo(Banco banco, int pos){
+		if(banco.getCliente(pos).getNumCuentas() == 0)
+			return;
+		double miSaldo = 0;
+		for(int i = 0; i < banco.getCliente(pos).getNumCuentas(); i++){
+			miSaldo += banco.getCliente(pos).getCuenta(i).getSaldo();
+		}
+		System.out.println("Tu saldo es de: $" + miSaldo);
+	}
+	
+	private void pagarServicio(double saldo, String servicio, int pos, Banco banco, int cuenta){
+		double saldo2;
+		int cantidadBilletes;
+		if (banco.getCliente(pos).getCuenta(cuenta) instanceof CuentaAhorro)
+		{
+			if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
+			{
+				System.out.println("Se pago " + servicio);
+				ImprimeSaldo(banco, pos);
+			}
+			else
+				System.out.println("No se pudo pagar, fondos insuficientes.");
+		}
+		else{
+			if(banco.getCliente(pos).getCuenta(cuenta).getSaldo() + ((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().getSaldo() >= saldo)
+			{
+				if (banco.getCliente(pos).getCuenta(cuenta).getSaldo() >= saldo)
+				{
+					if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo)==true)
+					{
+						System.out.println("Se pago " + servicio);
+						ImprimeSaldo(banco, pos);
+					}
+					else
+						System.out.println("No se pudo pagar, fondos insuficientes.");
+				}
+				else
+				{
+					saldo2 = banco.getCliente(pos).getCuenta(cuenta).getSaldo();
+					if(banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2)==true)
+					{
+						saldo -= saldo2;
+						if(((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo)==true)
+						{
+							System.out.println("Se pago " + servicio);
+							ImprimeSaldo(banco, pos);
+						}
+						else
+							System.out.println("No se pudo pagar, fondos insuficientes.");
+					}
+					else
+						System.out.println("No se pudo pagar, fondos insuficientes.");
+				}
+			}
+			else
+				System.out.println("No se pudo pagar, fondos insuficientes.");
+		}
+	}
 	/*private void mostrarProductos(){
 		for(int i=0;i<getNumMaxJugos();i++){
 			System.out.println((i+1) + ". Jugo de " + jugos[i].getNombreProducto() + " Precio: $" + jugos[i].getPrecioProducto() +" Cuantos: " + jugos[i].getNumProductos());
@@ -221,6 +304,10 @@ public class CajeroAutomatico{
 			while(this.billetes[i].getNumBilletes() > 0 && cantidad - this.billetes[i].getNombreBillete() >= 0)
 			{
 				cantidad -= this.billetes[i].getNombreBillete();
+				if (this.billetes[i].getNombreBillete() == 50 && Math.floorMod(cantidad - 50, 20) != 0)
+				{
+					i++;
+				}
 				this.billetes[i].venderProducto();
 				if (cantidad == 0)
 				{

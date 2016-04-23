@@ -1,5 +1,5 @@
 package personales;
-public class Persona{
+public class Persona implements java.io.Serializable{
 	private String nombre;
 	private String apellidoPaterno;
 	private String apellidoMaterno;
@@ -12,7 +12,7 @@ public class Persona{
 		this.nombre = nombre;
 		this.apellidoPaterno = apellidoPaterno;
 		this.apellidoMaterno = apellidoMaterno;
-		fechaDeNacimiento = new Fecha();
+		//fechaDeNacimiento = new Fecha();
 	}
 	
 	public Persona(){

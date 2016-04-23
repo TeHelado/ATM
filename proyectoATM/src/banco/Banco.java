@@ -1,4 +1,5 @@
 package banco;
+import java.io.*;
 import java.util.Scanner;
 import java.util.Collection;
 import java.util.Vector;
@@ -8,7 +9,28 @@ public class Banco{
 	private Vector<Cliente> clientes;
 	
 	public Banco(){
-		clientes = new Vector<Cliente>(20, 1);
+		try{
+			FileInputStream archivoEntrada = new FileInputStream("clientes.ser");
+			ObjectInputStream entrada = new ObjectInputStream(archivoEntrada);
+			clientes = (Vector<Cliente>)entrada.readObject();
+			entrada.close();
+				String movimiento;
+				for(int i = 0 ; i < getUltimoElemento() ; i++){
+					try{
+						String nombreArchivo = getCliente(i).getNombre() + getCliente(i).getApellidoPaterno() + getCliente(i).getApellidoMaterno() + "movimientos.txt";
+						FileReader lector = new FileReader(nombreArchivo);
+						BufferedReader bufferlector = new BufferedReader(lector);
+						while((movimiento = bufferlector.readLine()) != null){
+							getCliente(i).setMovimiento(movimiento);
+						}
+						lector.close();
+					}catch(IOException e){
+					}
+				}
+		}catch(IOException e){
+			clientes = new Vector<Cliente>(20, 1);
+		}catch(ClassNotFoundException e1){
+		}
 	}
 	
 	public Cliente getCliente(int i){
@@ -133,5 +155,13 @@ public class Banco{
 					break;
 			}
 		}while(opc!=3);
+		try{
+			FileOutputStream archivoSalida = new FileOutputStream("clientes.ser");
+			ObjectOutputStream salida = new ObjectOutputStream(archivoSalida);
+			salida.writeObject(clientes);
+			salida.close();
+		}catch(IOException e){
+			System.err.println("No se pudo guardar el archivo");
+		}
 	}
 }

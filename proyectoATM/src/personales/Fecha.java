@@ -1,5 +1,5 @@
 package personales;
-public class Fecha{
+public class Fecha implements java.io.Serializable{
 	private int dia;
 	private int mes;
 	private int anio;

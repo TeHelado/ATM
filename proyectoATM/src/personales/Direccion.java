@@ -1,5 +1,5 @@
 package personales;
-public class Direccion{
+public class Direccion implements java.io.Serializable{
 	private String calle;
 	private int numero;
 	private String colonia;

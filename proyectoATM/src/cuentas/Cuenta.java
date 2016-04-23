@@ -1,5 +1,5 @@
 package cuentas;
-public class Cuenta{
+public class Cuenta implements java.io.Serializable{
 	private double saldo;
 	
 	public Cuenta(double saldoInicial){

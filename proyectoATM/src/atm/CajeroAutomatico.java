@@ -1,8 +1,13 @@
 package atm;
+import java.io.*;
 import java.util.Scanner;
 import java.util.Random;
 import cuentas.*;
 import banco.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.ArrayList;
 public class CajeroAutomatico{
 	private DespachadorDeBilletes[] billetes;
 	private double efectivoCajero;
@@ -42,7 +47,9 @@ public class CajeroAutomatico{
 				System.out.println("3.- Abono en Cuenta");
 				System.out.println("4.- Retiro en Cuenta");
 				System.out.println("5.- Pago de Servicios");
-				System.out.println("6.- Salir");
+				System.out.println("6.- Consulta de informacion");
+				System.out.println("7.- Consulta de movimientos");
+				System.out.println("8.- Salir");
 				System.out.print("\nOpcion: ");
 				opc = teclado.nextInt();
 				switch(opc){
@@ -69,8 +76,11 @@ public class CajeroAutomatico{
 							} while(cuenta<1||cuenta>banco.getCliente(pos).getNumCuentas());
 							cuenta--;
 							System.out.print("Inserte el dinero a depositar: ");
-							if(banco.getCliente(pos).getCuenta(cuenta).depositarCuenta(teclado.nextDouble())==true)
+							double dinero = teclado.nextDouble();
+							if(banco.getCliente(pos).getCuenta(cuenta).depositarCuenta(dinero)==true){
 								System.out.println("Depositado con exito en la cuenta " + (cuenta+1));
+								banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (cuenta+1) + ": $" + dinero);
+							}
 							else
 								System.out.println("No se pudo depositar en la cuenta" + (cuenta+1));
 						}
@@ -102,6 +112,8 @@ public class CajeroAutomatico{
 											banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
 											System.out.println("Retirado con exito de la cuenta " + (cuenta+1));
 											RetirarBilletes((int)saldo);
+											banco.getCliente(pos).setMovimiento("Retiro: $" + saldo);
+											
 										}	
 										catch(OverdraftException e){
 											System.out.println(e.getMessage() + e.getDeficit());
@@ -116,6 +128,7 @@ public class CajeroAutomatico{
 													banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
 													System.out.println("Retirado con exito de la cuenta " + (cuenta+1));
 													RetirarBilletes((int)saldo);
+													banco.getCliente(pos).setMovimiento("Retiro: $" + saldo);
 												}
 												catch(OverdraftException e){
 													System.out.println(e.getMessage() + e.getDeficit());
@@ -131,6 +144,7 @@ public class CajeroAutomatico{
 														((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo);
 														System.out.println("Retirado con exito de la cuenta " + (cuenta+1));
 														RetirarBilletes((int)saldo + (int)saldo2);
+														banco.getCliente(pos).setMovimiento("Retiro: $" + saldo);
 													}
 													catch(OverdraftException e){
 														System.out.println(e.getMessage() + e.getDeficit());
@@ -184,10 +198,44 @@ public class CajeroAutomatico{
 							System.out.println("No tienes cuentas, favor de crear una");
 						}
 						break;
-					default:
-						System.out.println("Selecciona una opcion valida");
+					case 6:
+						System.out.print("Nombre: " + banco.getCliente(pos).getNombre() + " ");
+						System.out.print(banco.getCliente(pos).getApellidoPaterno() + " ");
+						System.out.print(banco.getCliente(pos).getApellidoMaterno() + "\n");
+						System.out.println("Direccion: " + banco.getCliente(pos).getDireccion().toString());
+						System.out.println("Fecha de Nacimiento: " + banco.getCliente(pos).getFechaDeNacimiento().toString());
+						System.out.println("Edad: " + banco.getCliente(pos).getEdad());
+						System.out.println("Clave Cliente: " + banco.getCliente(pos).getClaveCliente());
+						System.out.println("RFC: " + banco.getCliente(pos).getRFC());
+						System.out.println("Cuentas: " + banco.getCliente(pos).getNumCuentas());
+						break;
+					case 7:
+						try{
+							String nombreArchivo = banco.getCliente(pos).getNombre() + banco.getCliente(pos).getApellidoPaterno() + banco.getCliente(pos).getApellidoMaterno() + "movimientos.txt";
+							FileReader lector = new FileReader(nombreArchivo);
+							BufferedReader bufferlector = new BufferedReader(lector);
+							String movimiento;
+							while((movimiento = bufferlector.readLine()) != null){
+								System.out.println(movimiento);
+							}
+							lector.close();
+						}catch(IOException e){
+							System.err.println("No se pudo leer el archivo de movimientos de " + banco.getCliente(pos).getNombre() + " " + banco.getCliente(pos).getApellidoPaterno() + " " + banco.getCliente(pos).getApellidoMaterno());
+						}
+						break;
 				}
-			} while(opc!=6);
+			} while(opc!=8);
+			try{
+				String nombreArchivo = banco.getCliente(pos).getNombre() + banco.getCliente(pos).getApellidoPaterno() + banco.getCliente(pos).getApellidoMaterno() + "movimientos.txt";
+				File archivoSalida = new File(nombreArchivo);
+				FileWriter escritor = new FileWriter(archivoSalida);
+				for(int i = 0 ; i < banco.getCliente(pos).getListaMovimientos().size() ; i++){
+					escritor.write(banco.getCliente(pos).getListaMovimientos().get(i) + "\r\n");
+				}
+				escritor.close();
+			}catch(IOException e){
+				System.err.println("No se pudo guardar el archivo");
+			}
 		}
 		else{
 			System.out.println("El NIP no coincide");
@@ -213,6 +261,7 @@ public class CajeroAutomatico{
 				banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
 				System.out.println("Se pago " + servicio);
 				ImprimeSaldo(banco, pos);
+				banco.getCliente(pos).setMovimiento("Se pago " + servicio);
 			}
 			catch(OverdraftException e){
 				System.out.println(e.getMessage() + e.getDeficit());
@@ -227,6 +276,7 @@ public class CajeroAutomatico{
 						banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
 						System.out.println("Se pago " + servicio);
 						ImprimeSaldo(banco, pos);
+						banco.getCliente(pos).setMovimiento("Se pago " + servicio);
 					}
 					catch(OverdraftException e){
 						System.out.println(e.getMessage() + e.getDeficit());
@@ -242,6 +292,7 @@ public class CajeroAutomatico{
 							((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo);
 							System.out.println("Se pago " + servicio);
 							ImprimeSaldo(banco, pos);
+							banco.getCliente(pos).setMovimiento("Se pago " + servicio);
 						}
 						catch(OverdraftException e){
 							System.out.println(e.getMessage() + e.getDeficit());

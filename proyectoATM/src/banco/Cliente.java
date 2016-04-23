@@ -2,12 +2,14 @@ package banco;
 import java.time.*;
 import personales.*;
 import cuentas.*;
+import java.util.ArrayList;
 public class Cliente extends Persona{
 	private String claveCliente;
 	private String RFC;
 	private Cuenta cuenta[];
 	private int numCuentas;
 	private String NIP;
+	private ArrayList<String> movimientos;
 	
 	public Cliente(){
 		
@@ -21,6 +23,15 @@ public class Cliente extends Persona{
 		this.cuenta = new Cuenta[2];
 		setRFC();
 		setClaveCliente();
+		movimientos = new ArrayList<String>();
+	}
+	
+	public void setMovimiento(String movimiento){
+		this.movimientos.add(movimiento);
+	}
+	
+	public ArrayList<String> getListaMovimientos(){
+		return movimientos;
 	}
 	
 	public Cuenta getCuenta(int i){
@@ -64,5 +75,9 @@ public class Cliente extends Persona{
 		rfcBanco.setInicialesRFC(super.getNombre(),super.getApellidoPaterno(),super.getApellidoMaterno());
 		rfcBanco.setFechaRFC(super.getFechaDeNacimiento());
 		this.RFC = rfcBanco.toString();
+	}
+	
+	public String getRFC(){
+		return this.RFC;
 	}
 }

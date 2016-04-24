@@ -3,8 +3,10 @@ import java.io.*;
 import java.util.Scanner;
 import java.util.Collection;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import personales.*;
 import cuentas.*;
+
 public class Banco{
 	private Vector<Cliente> clientes;
 	
@@ -39,6 +41,49 @@ public class Banco{
 	
 	public int getUltimoElemento(){
 		return this.clientes.size();
+	}
+	
+	public void addClient(String n, String aP, String aM, int dia, int mes, int anio, String calle, String colonia, int numero, String delegacion, String ciudad, String pais, String NIP){
+		Fecha fechaCliente = new Fecha();
+		fechaCliente.setFecha(dia,mes,anio);
+		Cliente nuevoCliente = new Cliente(n,aP,aM, fechaCliente);
+		Direccion dirCliente = new Direccion(calle,numero,colonia);
+		dirCliente.setDelegacion(delegacion);
+		dirCliente.setCiudad(ciudad);
+		dirCliente.setPais(pais);
+		nuevoCliente.setDireccion(dirCliente);
+		nuevoCliente.setNIP(NIP);	
+		clientes.addElement(nuevoCliente);
+		JOptionPane.showMessageDialog(null, "Cliente nuevo: " + n, "Aviso", JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	public void addCuenta(int tipo, int pos, double saldo){
+		switch(tipo){
+			case 1:
+				if (saldo >= 50){
+					getCliente(pos).agregarCuenta(new CuentaAhorro(saldo, 0));
+					JOptionPane.showMessageDialog(null, "Cuenta nueva creada.", "Aviso", JOptionPane.PLAIN_MESSAGE);
+				}
+					
+				else
+					System.out.println("La cantidad minima son $50");
+				break;
+			case 2:
+				if (getCliente(pos).getNumCuentas() == 0)
+					JOptionPane.showMessageDialog(null, "Necesitas una cuenta de ahorro.", "Error", JOptionPane.ERROR_MESSAGE);
+				else
+				{
+					if (saldo >= 50)
+					{
+						getCliente(pos).agregarCuenta(new CuentaCheques(saldo));
+						((CuentaCheques)getCliente(pos).getCuenta(1)).setCuentaDeAhorro((CuentaAhorro)getCliente(pos).getCuenta(0));
+						JOptionPane.showMessageDialog(null, "Cuenta nueva creada.", "Aviso", JOptionPane.PLAIN_MESSAGE);
+					}
+					else
+						System.out.println("La cantidad minima son $50");
+				}
+				break;
+		}
 	}
 	
 	public void mostrarMenuCliente(Scanner teclado){

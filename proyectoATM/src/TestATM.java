@@ -1,7 +1,8 @@
-import java.util.Scanner;
+import java.util.*;
 import banco.*;
 import atm.*;
 import cuentas.*;
+import java.io.*;
 public class TestATM{
 	public static void main(String args[]){
 		Scanner teclado = new Scanner(System.in);
@@ -30,6 +31,14 @@ public class TestATM{
 				}break;
 			}
 		}while(opc != 3);
+		try{
+			FileOutputStream archivoSalida = new FileOutputStream("clientes.ser");
+			ObjectOutputStream salida = new ObjectOutputStream(archivoSalida);
+			salida.writeObject(banco.getBanco());
+			salida.close();
+		}catch(IOException e){
+			System.err.println("No se pudo guardar el archivo");
+		}
 	}
 
 }

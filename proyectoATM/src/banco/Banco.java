@@ -18,6 +18,7 @@ public class Banco{
 			entrada.close();
 				String movimiento;
 				for(int i = 0 ; i < getUltimoElemento() ; i++){
+					/*
 					try{
 						String nombreArchivo = getCliente(i).getNombre() + getCliente(i).getApellidoPaterno() + getCliente(i).getApellidoMaterno() + "movimientos.txt";
 						FileReader lector = new FileReader(nombreArchivo);
@@ -27,7 +28,7 @@ public class Banco{
 						}
 						lector.close();
 					}catch(IOException e){
-					}
+					}*/
 				}
 		}catch(IOException e){
 			clientes = new Vector<Cliente>(20, 1);

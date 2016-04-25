@@ -68,4 +68,8 @@ public class Persona implements java.io.Serializable{
 	public int getEdad(){
 		return this.edad;
 	}
+
+	public String nombretoString(){
+		return this.nombre + " " + this.apellidoPaterno + " " + this.apellidoMaterno;
+	}
 }

@@ -43,6 +43,10 @@ public class Banco{
 	public int getUltimoElemento(){
 		return this.clientes.size();
 	}
+
+	public Vector<Cliente> getBanco(){
+		return this.clientes;
+	}
 	
 	public void addClient(String n, String aP, String aM, int dia, int mes, int anio, String calle, String colonia, int numero, String delegacion, String ciudad, String pais, String NIP){
 		Fecha fechaCliente = new Fecha();
@@ -60,7 +64,7 @@ public class Banco{
 	
 	public void addCuenta(int tipo, int pos, double saldo){
 		switch(tipo){
-			case 1:
+			case 0:
 				if (saldo >= 50){
 					getCliente(pos).agregarCuenta(new CuentaAhorro(saldo, 0));
 					JOptionPane.showMessageDialog(null, "Cuenta nueva creada.", "Aviso", JOptionPane.PLAIN_MESSAGE);
@@ -69,7 +73,7 @@ public class Banco{
 				else
 					System.out.println("La cantidad minima son $50");
 				break;
-			case 2:
+			case 1:
 				if (getCliente(pos).getNumCuentas() == 0)
 					JOptionPane.showMessageDialog(null, "Necesitas una cuenta de ahorro.", "Error", JOptionPane.ERROR_MESSAGE);
 				else

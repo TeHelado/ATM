@@ -82,30 +82,9 @@ public class CuentaNueva extends JFrame{
 			}
 		}
 		
-		public void presentarFrame(Banco banco){
-			 try{
-				 this.banco = banco;
-				entrada = JOptionPane.showInputDialog("Inserte su NIP: ");
-				NIP = entrada;
-
-				pos = 0;
-				boolean NIPReconocido = false;	
-				for(int i = 0; i < banco.getUltimoElemento(); i++){
-					if(NIP.equals(banco.getCliente(i).getNIP())){
-						pos = i;
-						NIPReconocido = true;
-					}
-				}
-				if(!NIPReconocido)
-					JOptionPane.showMessageDialog(null, "No se encontro el NIP.", "Error", JOptionPane.ERROR_MESSAGE);
-				else
-					if (banco.getCliente(pos).getNumCuentas() < 2)
-						setVisible(true);
-					else
-						JOptionPane.showMessageDialog(null, "Este cliente ya tiene 2 cuentas.", "Error", JOptionPane.ERROR_MESSAGE);
-			 }
-			 catch (Exception e){
-				JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
- 			 }
+		public void presentarFrame(Banco banco, int pos){
+			this.banco = banco;
+			this.pos = pos;
+			setVisible(true);
 		}
 }

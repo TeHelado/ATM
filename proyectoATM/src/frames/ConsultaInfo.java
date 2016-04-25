@@ -1,28 +1,22 @@
+package frames;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import banco.*;
 
 public class ConsultaInfo extends JFrame{
 	
-	private JLabel label_Name, label_App, label_Apm, label_Dn, label_Mn, label_An, label_Calle, label_Num, label_Col, label_Del, label_Cd, label_Pais, label_Edad, label_clave, label_RFC, label_cuentas;
+	private JLabel label_Name, label_Fecha, label_Direccion, label_Edad, label_clave, label_RFC, label_cuentas;
 	private JPanel panel_info;
 	private GridBagConstraints grid;
+	private Cliente cliente;
 
 	public ConsultaInfo(){
 		super("Información de Cliente");
 		label_Name = new JLabel("Nombre");
-		label_App = new JLabel("Apellido Paterno");
-		label_Apm = new JLabel("Apellido Materno");
-		label_Dn = new JLabel("Día de Nacimiento");
-		label_Mn = new JLabel("Mes de Nacimiento");
-		label_An = new JLabel("Año de Nacimiento");
-		label_Calle = new JLabel("Calle");
-		label_Num = new JLabel("Número");
-		label_Col = new JLabel("Colonia");
-		label_Del = new JLabel("Delegación");
-		label_Cd = new JLabel("Ciudad");
-		label_Pais = new JLabel("País");
+		label_Fecha = new JLabel("Fecha de Nacimiento");
+		label_Direccion = new JLabel("Calle");
 		label_Edad = new JLabel("Edad");
 		label_clave = new JLabel("Clave Cliente");
 		label_RFC = new JLabel("RFC");
@@ -35,12 +29,7 @@ public class ConsultaInfo extends JFrame{
 
 		//panel_info.setLayout(new GridLayout(3,1));
 		
-		panel_info.add(label_Calle);
-		panel_info.add(label_Num);
-		panel_info.add(label_Col);
-		panel_info.add(label_Del);
-		panel_info.add(label_Cd);
-		panel_info.add(label_Pais);
+		panel_info.add(label_Direccion);
 
 		add(panel_info);
 		setSize(500,400);
@@ -52,27 +41,24 @@ public class ConsultaInfo extends JFrame{
 		});
 	}
 
-	public void presentFrame(){
+	public void presentFrame(Cliente cliente){
+		this.cliente = cliente;
+		
+		label_Name.setText("Nombre: " + cliente.nombretoString());
+		label_Fecha.setText("Fecha de nacimiento: " + cliente.getFechaDeNacimiento());
+		label_Direccion.setText("Dirección: " + cliente.getDireccion());
+		label_Edad.setText(String.valueOf("Edad: " + cliente.getEdad()));
+		label_clave.setText("Clave de cliente: " + cliente.getClaveCliente());
+		label_RFC.setText("RFC: " + cliente.getRFC());
+		label_cuentas.setText("Numero de cuentas: " + String.valueOf(cliente.getNumCuentas()));
 
 		grid.gridx = 0;
 		grid.gridy = 0;
 		panel_info.add(label_Name,grid);
-		grid.gridx = 1;
-		grid.gridy = 0;
-		panel_info.add(label_App,grid);
-		grid.gridx = 2;
-		grid.gridy = 0;
-		panel_info.add(label_Apm,grid);
 
 		grid.gridx = 0;
 		grid.gridy = 1;
-		panel_info.add(label_Dn,grid);
-		grid.gridx = 1;
-		grid.gridy = 1;
-		panel_info.add(label_Mn,grid);
-		grid.gridx = 2;
-		grid.gridy = 1;
-		panel_info.add(label_An,grid);
+		panel_info.add(label_Fecha,grid);
 
 		grid.gridx = 0;
 		grid.gridy = 2;
@@ -80,22 +66,7 @@ public class ConsultaInfo extends JFrame{
 
 		grid.gridx = 0;
 		grid.gridy = 3;
-		panel_info.add(label_Calle,grid);
-		grid.gridx = 1;
-		grid.gridy = 3;
-		panel_info.add(label_Num,grid);
-		grid.gridx = 2;
-		grid.gridy = 3;
-		panel_info.add(label_Col,grid);
-		grid.gridx = 3;
-		grid.gridy = 3;
-		panel_info.add(label_Del,grid);
-		grid.gridx = 4;
-		grid.gridy = 3;
-		panel_info.add(label_Cd,grid);
-		grid.gridx = 5;
-		grid.gridy = 3;
-		panel_info.add(label_Pais,grid);
+		panel_info.add(label_Direccion,grid);
 
 		grid.gridx = 0;
 		grid.gridy = 4;

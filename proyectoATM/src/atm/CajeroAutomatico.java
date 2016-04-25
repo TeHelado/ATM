@@ -12,8 +12,10 @@ public class CajeroAutomatico{
 	private DespachadorDeBilletes[] billetes;
 	private double efectivoCajero;
 	private int numMaxBilletes;
+	private Banco banco;
 	
-	public CajeroAutomatico(){
+	public CajeroAutomatico(Banco banco){
+		this.banco = banco;
 		billetes = new DespachadorDeBilletes[5];
 		this.numMaxBilletes = 5;
 		this.efectivoCajero = 0;
@@ -182,13 +184,13 @@ public class CajeroAutomatico{
 								switch(opc2)
 								{
 									case 1:
-										pagarServicio(500, "la luz.", pos, banco, cuenta);
+										//pagarServicio(500, "la luz.", pos, banco, cuenta);
 										break;
 									case 2:
-										pagarServicio(50, "el agua.", pos, banco, cuenta);
+										//pagarServicio(50, "el agua.", pos, banco, cuenta);
 										break;
 									case 3:
-										pagarServicio(350, "el gas.", pos, banco, cuenta);
+										//pagarServicio(350, "el gas.", pos, banco, cuenta);
 										break;
 								}
 							}
@@ -241,6 +243,76 @@ public class CajeroAutomatico{
 			System.out.println("El NIP no coincide");
 		}
 	}
+
+	public void retiroCuenta(double saldo, int cuenta, int pos){
+		if(banco.getCliente(pos).getNumCuentas()>0){
+			double saldo2;
+			if (this.efectivoCajero < saldo)
+				JOptionPane.showMessageDialog(null, "Fondos insuficientes en el cajero", "Error", JOptionPane.PLAIN_MESSAGE);
+			else
+			{
+				if (CalculaBilletes((int)saldo))
+				{
+					if (banco.getCliente(pos).getCuenta(cuenta) instanceof CuentaAhorro)
+					{
+						try{
+							banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
+							JOptionPane.showMessageDialog(null, "Retiro de $" + saldo + " realizado con exito. tu saldo es " + banco.getCliente(pos).getCuenta(cuenta).getSaldo(), "Exito", JOptionPane.PLAIN_MESSAGE);
+							RetirarBilletes((int)saldo);
+							banco.getCliente(pos).setMovimiento("Retiro: $" + saldo);
+						}	
+						catch(OverdraftException e){
+							JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					else{
+						if(banco.getCliente(pos).getCuenta(cuenta).getSaldo() + ((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().getSaldo() >= saldo)
+						{
+							if (banco.getCliente(pos).getCuenta(cuenta).getSaldo() >= saldo)
+							{
+								try{
+									banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
+									JOptionPane.showMessageDialog(null, "Retiro de $" + saldo + " realizado con exito. tu saldo es " + banco.getCliente(pos).getCuenta(cuenta).getSaldo(), "Exito", JOptionPane.PLAIN_MESSAGE);
+									RetirarBilletes((int)saldo);
+									banco.getCliente(pos).setMovimiento("Retiro: $" + saldo);
+								}
+								catch(OverdraftException e){
+									JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
+								}
+							}
+							else
+							{
+								saldo2 = banco.getCliente(pos).getCuenta(cuenta).getSaldo();
+								try{
+									banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo2);
+									saldo -= saldo2;
+									try{
+										((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo);
+										JOptionPane.showMessageDialog(null, "Retiro de $" + saldo + " realizado con exito. tu saldo es " + banco.getCliente(pos).getCuenta(cuenta).getSaldo(), "Exito", JOptionPane.PLAIN_MESSAGE);
+										RetirarBilletes((int)saldo + (int)saldo2);
+										banco.getCliente(pos).setMovimiento("Retiro: $" + (saldo + saldo2));
+									}
+									catch(OverdraftException e){
+										JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
+									}
+								}
+								catch(OverdraftException e){
+									JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
+								}
+							}
+						}
+						else
+							JOptionPane.showMessageDialog(null, "No se pudo retirar de la cuenta" + cuenta, "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}
+				else
+					JOptionPane.showMessageDialog(null, "Billetes insuficientes", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+		}
+		else{
+			JOptionPane.showMessageDialog(null, "No tienes cuentas", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	
 	private void ImprimeSaldo(Banco banco, int pos){
 		if(banco.getCliente(pos).getNumCuentas() == 0)
@@ -251,20 +323,30 @@ public class CajeroAutomatico{
 		}
 		System.out.println("Tu saldo es de: $" + miSaldo);
 	}
+
+	public void consultaSaldo(int pos){
+		if(banco.getCliente(pos).getNumCuentas() == 0)
+			return;
+		double miSaldo = 0;
+		for(int i = 0; i < banco.getCliente(pos).getNumCuentas(); i++){
+			miSaldo += banco.getCliente(pos).getCuenta(i).getSaldo();
+		}
+		JOptionPane.showMessageDialog(null, "tu saldo es de $" + miSaldo, "Saldo", JOptionPane.PLAIN_MESSAGE);
+	}
 	
-	private void pagarServicio(double saldo, String servicio, int pos, Banco banco, int cuenta){
+	public void pagarServicio(double saldo, String servicio, int pos, int cuenta){
 		double saldo2;
 		int cantidadBilletes;
 		if (banco.getCliente(pos).getCuenta(cuenta) instanceof CuentaAhorro)
 		{
 			try{
 				banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
-				System.out.println("Se pago " + servicio);
+				JOptionPane.showMessageDialog(null, "Se pago " + servicio, "Exito", JOptionPane.PLAIN_MESSAGE);
 				ImprimeSaldo(banco, pos);
 				banco.getCliente(pos).setMovimiento("Se pago " + servicio);
 			}
 			catch(OverdraftException e){
-				System.out.println(e.getMessage() + e.getDeficit());
+				JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		else{
@@ -274,12 +356,12 @@ public class CajeroAutomatico{
 				{
 					try{
 						banco.getCliente(pos).getCuenta(cuenta).retirarACuenta(saldo);
-						System.out.println("Se pago " + servicio);
+						JOptionPane.showMessageDialog(null, "Se pago " + servicio, "Exito", JOptionPane.PLAIN_MESSAGE);
 						ImprimeSaldo(banco, pos);
 						banco.getCliente(pos).setMovimiento("Se pago " + servicio);
 					}
 					catch(OverdraftException e){
-						System.out.println(e.getMessage() + e.getDeficit());
+						JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 				else
@@ -290,21 +372,21 @@ public class CajeroAutomatico{
 						saldo -= saldo2;
 						try{
 							((CuentaCheques)(banco.getCliente(pos).getCuenta(cuenta))).getCuentaDeAhorro().retirarACuenta(saldo);
-							System.out.println("Se pago " + servicio);
+							JOptionPane.showMessageDialog(null, "Se pago " + servicio, "Exito", JOptionPane.PLAIN_MESSAGE);
 							ImprimeSaldo(banco, pos);
 							banco.getCliente(pos).setMovimiento("Se pago " + servicio);
 						}
 						catch(OverdraftException e){
-							System.out.println(e.getMessage() + e.getDeficit());
+							JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 					catch(OverdraftException e){
-						System.out.println(e.getMessage() + e.getDeficit());
+						JOptionPane.showMessageDialog(null, e.getMessage() + e.getDeficit(), "Error", JOptionPane.ERROR_MESSAGE);
 					}
 				}
 			}
 			else
-				System.out.println("No se pudo pagar, fondos insuficientes.");
+				JOptionPane.showMessageDialog(null, "Fondos insuficientes", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	

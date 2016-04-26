@@ -244,6 +244,20 @@ public class CajeroAutomatico{
 		}
 	}
 
+	public void guardaMovimientos(int pos){
+		try{
+				String nombreArchivo = banco.getCliente(pos).getNombre() + banco.getCliente(pos).getApellidoPaterno() + banco.getCliente(pos).getApellidoMaterno() + "movimientos.txt";
+				File archivoSalida = new File(nombreArchivo);
+				FileWriter escritor = new FileWriter(archivoSalida);
+				for(int i = 0 ; i < banco.getCliente(pos).getListaMovimientos().size() ; i++){
+					escritor.write(banco.getCliente(pos).getListaMovimientos().get(i) + "\r\n");
+				}
+				escritor.close();
+			}catch(IOException e){
+				System.err.println("No se pudo guardar el archivo");
+			}
+	}
+
 	public void retiroCuenta(double saldo, int cuenta, int pos){
 		if(banco.getCliente(pos).getNumCuentas()>0){
 			double saldo2;

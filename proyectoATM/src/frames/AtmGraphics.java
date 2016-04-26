@@ -185,6 +185,7 @@ public class AtmGraphics extends JFrame{
 					label_6.setText(" ");
 					label_7.setText(" ");
 					label_8.setText(" ");
+					label_10.setText(" ");
 					button_1.setActionCommand("Admn_clientes");
 					button_2.setActionCommand("ATM");
 					button_3.setActionCommand("B3");
@@ -193,6 +194,9 @@ public class AtmGraphics extends JFrame{
 					button_6.setActionCommand("B6");
 					button_7.setActionCommand("B7");
 					button_8.setActionCommand("B8");
+					password = false;
+					teclado_activo = false;
+					tipo = -1;
 				}break;
 				case "Alta_cliente":{
 					formato_cliente.presentFrame(banco);
@@ -481,7 +485,7 @@ public class AtmGraphics extends JFrame{
 					if(label_9.getText().equals("ABONO")){
 						if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(100)==true){
 							JOptionPane.showMessageDialog(null, "Deposito de $100 realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
-							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $50");
+							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $100");
 						}
 					}
 					else{
@@ -492,7 +496,7 @@ public class AtmGraphics extends JFrame{
 					if(label_9.getText().equals("ABONO")){
 						if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(200)==true){
 							JOptionPane.showMessageDialog(null, "Deposito de $200 realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
-							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $50");
+							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $200");
 						}
 					}
 					else{
@@ -503,7 +507,7 @@ public class AtmGraphics extends JFrame{
 					if(label_9.getText().equals("ABONO")){
 						if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(300)==true){
 							JOptionPane.showMessageDialog(null, "Deposito de $300 realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
-							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $50");
+							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $300");
 						}
 					}
 					else{
@@ -514,7 +518,7 @@ public class AtmGraphics extends JFrame{
 					if(label_9.getText().equals("ABONO")){
 						if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(400)==true){
 							JOptionPane.showMessageDialog(null, "Deposito de $400 realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
-							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $50");
+							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $400");
 						}
 					}
 					else{
@@ -525,7 +529,7 @@ public class AtmGraphics extends JFrame{
 					if(label_9.getText().equals("ABONO")){
 						if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(500)==true){
 							JOptionPane.showMessageDialog(null, "Deposito de $500 realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
-							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $50");
+							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $500");
 						}
 					}
 					else{
@@ -536,7 +540,7 @@ public class AtmGraphics extends JFrame{
 					if(label_9.getText().equals("ABONO")){
 						if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(1000)==true){
 							JOptionPane.showMessageDialog(null, "Deposito de $1000 realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
-							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $50");
+							banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $1000");
 						}
 					}
 					else{
@@ -544,7 +548,64 @@ public class AtmGraphics extends JFrame{
 					}
 				}break;
 				case "Otra_cantidad":{
-
+					label_1.setText(" ");
+					label_2.setText(" ");
+					label_3.setText(" ");
+					label_4.setText(" ");
+					label_5.setText(" ");
+					label_6.setText(" ");
+					label_7.setText(" ");
+					label_8.setText("Aceptar");
+					button_1.setActionCommand("B1");
+					button_2.setActionCommand("B2");
+					button_3.setActionCommand("B3");
+					button_4.setActionCommand("B4");
+					button_5.setActionCommand("B5");
+					button_6.setActionCommand("B6");
+					button_7.setActionCommand("B7");	
+					button_8.setActionCommand("Otra_cantidad1");			
+					data = "";
+					password = false;
+					teclado_activo = true;
+				}break;
+				case "Otra_cantidad1":{
+					if (label_1.getText().length() > 2){
+						if(label_9.getText().equals("ABONO")){
+							if(banco.getCliente(pos).getCuenta(tipo).depositarCuenta(Double.parseDouble(data))==true){
+								JOptionPane.showMessageDialog(null, "Deposito de $" + data + " realizado con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
+								banco.getCliente(pos).setMovimiento("Deposito en la cuenta " + (tipo + 1) + " : $" + data);
+							}
+						}
+						else{
+							cajero_automatico.retiroCuenta(Double.parseDouble(data),tipo,pos);
+						}
+						label_9.setText("ATM");
+						label_1.setText("Cambio de NIP");
+						label_2.setText("Consulta de saldo");
+						label_3.setText("Abono de cuenta");
+						label_4.setText("Retiro de cuenta");
+						label_5.setText("Pago de servicios");
+						label_6.setText("Consulta de información");
+						label_7.setText("Consulta de movimientos");
+						label_8.setText("Regresar");	
+						label_10.setText(banco.getCliente(pos).getNombre() + " " + banco.getCliente(pos).getApellidoPaterno()); 
+						pack();
+						button_1.setActionCommand("Cambio_NIP");
+						button_2.setActionCommand("Consulta_saldo");
+						button_3.setActionCommand("Abono_cuenta");
+						button_4.setActionCommand("Retiro_cuenta");
+						button_5.setActionCommand("Pago_servicios");
+						button_6.setActionCommand("Consulta_info");
+						button_7.setActionCommand("Consulta_mov");
+						button_8.setActionCommand("Regresar_principal");
+						data = "";
+						password = false;
+						teclado_activo = false;
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "Ingresa una cantidad.", "Error", JOptionPane.ERROR_MESSAGE);
+						button_8.setActionCommand("Otra_cantidad1");	
+					}
 				}break;
 				case "Luz":{
 					cajero_automatico.pagarServicio(500, "la luz.", pos, tipo);
@@ -565,13 +626,104 @@ public class AtmGraphics extends JFrame{
 					cajero_automatico.pagarServicio(400, "la tenencia.", pos, tipo);
 				}break;
 				case "Consulta_info":{
-					consulta_info.presentFrame(banco.getCliente(pos)); //LIGAR TODOS LOS DATOS A LOS DE LOS ARCHIVOS
+					consulta_info.presentFrame(banco.getCliente(pos));
 				}break;
 				case "Consulta_saldo":{
 					cajero_automatico.consultaSaldo(pos);
 				}break;
 				case "Consulta_mov":{
-
+					cajero_automatico.guardaMovimientos(pos);
+					try{
+						String nombreArchivo = banco.getCliente(pos).getNombre() + banco.getCliente(pos).getApellidoPaterno() + banco.getCliente(pos).getApellidoMaterno() + "movimientos.txt";
+						String textEditor;
+						if (System.getProperty("os.name").startsWith("Windows"))
+							textEditor = "notepad.exe";
+						else
+							textEditor = "pluma";
+						ProcessBuilder pb = new ProcessBuilder(textEditor, nombreArchivo);
+						pb.start();
+					}catch(Exception w){
+						JOptionPane.showMessageDialog(null, w.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}break;
+				case "Cambio_NIP":{
+					label_9.setText("Ingrese su NIP antiguo: ");
+					data = "";
+					label_1.setText(" ");
+					label_2.setText(" ");
+					label_3.setText(" ");
+					label_4.setText(" ");
+					label_5.setText(" ");
+					label_6.setText(" ");
+					label_7.setText(" ");
+					button_1.setActionCommand("B1");
+					button_2.setActionCommand("B2");
+					button_3.setActionCommand("B3");
+					button_4.setActionCommand("B4");
+					button_5.setActionCommand("B5");
+					button_6.setActionCommand("B6");
+					button_7.setActionCommand("B7");
+					password = true;
+					teclado_activo = true;
+					label_8.setText("Aceptar");
+					button_8.setActionCommand("Cambio_NIP1");
+				}break;
+				case"Cambio_NIP1":{
+					if (label_1.getText().length() > 2){
+						 try{
+							boolean NIPReconocido = false;	
+							for(int i = 0; i < banco.getUltimoElemento(); i++){
+								if(data.equals(banco.getCliente(i).getNIP())){
+									pos = i;
+									NIPReconocido = true;
+								}
+							}
+							if(!NIPReconocido)
+								JOptionPane.showMessageDialog(null, "No se encontro el NIP.", "Error", JOptionPane.ERROR_MESSAGE);
+							else{
+								data = "";
+								label_1.setText(" ");
+								button_8.setActionCommand("Cambio_NIP2");
+								label_9.setText("Ingrese nuevo NIP");
+							}
+						 }
+						 catch (Exception k){
+							JOptionPane.showMessageDialog(null, k.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			 			 }
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "Ingresa tu NIP", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+				}break;
+				case "Cambio_NIP2":{
+					if (label_1.getText().length() > 2){
+						banco.getCliente(pos).setNIP(data);
+						JOptionPane.showMessageDialog(null, "Tu NIP se cambio con exito.", "Exito", JOptionPane.PLAIN_MESSAGE);
+						label_9.setText("BIENVENIDO");
+						label_1.setText("Administración de clientes");
+						label_2.setText("ATM");
+						label_3.setText(" ");
+						label_4.setText(" ");
+						label_5.setText(" ");
+						label_6.setText(" ");
+						label_7.setText(" ");
+						label_8.setText(" ");
+						label_10.setText(" ");
+						button_1.setActionCommand("Admn_clientes");
+						button_2.setActionCommand("ATM");
+						button_3.setActionCommand("B3");
+						button_4.setActionCommand("B4");
+						button_5.setActionCommand("B5");
+						button_6.setActionCommand("B6");
+						button_7.setActionCommand("B7");
+						button_8.setActionCommand("B8");
+						data = "";
+						password = false;
+						teclado_activo = false;
+						tipo = -1;
+					}
+					else
+						JOptionPane.showMessageDialog(null, "Ingresa tu NIP", "Error", JOptionPane.ERROR_MESSAGE);
 				}break;
 			}
 		}
@@ -601,6 +753,7 @@ public class AtmGraphics extends JFrame{
 					data = "";
 					password = false;
 					teclado_activo = false;
+					tipo = -1;
 				}break;
 				case "Cancelar1":{
 					label_9.setText("ATM");
@@ -612,7 +765,7 @@ public class AtmGraphics extends JFrame{
 					label_6.setText("Consulta de información");
 					label_7.setText("Consulta de movimientos");
 					label_8.setText("Regresar");	
-					label_10.setText("NAME"); //LIGAR CON NOMBRE EN ARCHIVO
+					label_10.setText(banco.getCliente(pos).getNombre() + " " + banco.getCliente(pos).getApellidoPaterno());
 					pack();
 					button_1.setActionCommand("Cambio_NIP");
 					button_2.setActionCommand("Consulta_saldo");
